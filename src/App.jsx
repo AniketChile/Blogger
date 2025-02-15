@@ -4,8 +4,8 @@ import conf from './conf/conf'
 import { useDispatch } from 'react-redux'
 import authService from './appwrite/auth'
 import { login, logout } from './store/authSlice'
-import Header from './components/Header'
-import Footer from './components/Footer'
+import Header from './components/header/Header'
+import Footer from './components/footer/Footer'
 import { Outlet } from 'react-router-dom'
 
 function App() {
