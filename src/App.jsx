@@ -6,7 +6,7 @@ function App() {
   return (
     
     <>
-    
+    <h1>Appwrite Prjoect incoming</h1>
     </>
   )
 }
