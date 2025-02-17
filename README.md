@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+<<<<<< HEAD
 # Blogger
 =======
 # React + Vite
