@@ -1,6 +1,6 @@
 import React from 'react';
 
-function AuthLayout(props) {
+export default function Protected({children,authentication=true}) {
     return (
         <div>
             
@@ -8,4 +8,3 @@ function AuthLayout(props) {
     );
 }
 
-export default AuthLayout;
