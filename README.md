@@ -1,6 +1,6 @@
 # 🚀 Blogger - A Modern Blogging Platform
 
-![Screenshot 2025-02-23 183651](https://github.com/user-attachments/assets/fbde3ceb-2fea-4082-aa90-3db9a689d192)
+![image](https://github.com/user-attachments/assets/326cb48c-279a-46d4-879c-2967ea7d1e64)
 ![Screenshot 2025-02-23 183925](https://github.com/user-attachments/assets/c5d23884-1216-40a9-94d9-aec51d3eba30)
 ![Screenshot 2025-02-23 184005](https://github.com/user-attachments/assets/0d6cfe78-3f35-4d78-90de-10fcd66488d4)
 
