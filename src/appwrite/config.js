@@ -23,7 +23,7 @@ export class Service{
                         
                         title,
                         content,
-                        featureImage,
+                        featuredImages: featureImage,
                         status,
                         userID,
                         slug,

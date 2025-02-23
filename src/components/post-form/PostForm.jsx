@@ -7,49 +7,42 @@ import { useForm } from "react-hook-form";
 import { useCallback } from "react";
 import { useEffect } from "react";
 export default function PostForm({ post }) {
-  const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
+  const { register, handleSubmit, watch, setValue, control, getValues } =
+    useForm({
       defaultValues: {
-          title: post?.title || "",
-          slug: post?.$id || "",
-          content: post?.content || "",
-          status: post?.status || "active",
+        title: post?.title || "",
+        slug: post?.$id || "",
+        content: post?.content || "",
+        status: post?.status || "active",
       },
-  });
+    });
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
 
   const submit = async (data) => {
-    if (post) {
-      const file = data.image[0]
-        ? appwriteService.uploadFile(data.image[0])
-        : null;
-
-      if (file) {
-        appwriteService.deleteFile(post.featureImage);
-      }
-      const dbPost = await appwriteService.updatePost(post.$id, {
-        ...data,
-        featureImage: file ? file.$id : undefined,
-      });
-      if (dbPost) {
-        navigate(`/post/${dbPost.$id}`);
-      }
-    } else {
-      const file = await appwriteService.uploadFile(data.image[0]);
-
-      if (file) {
-        const fileId = file.$id;
-        data.featureImage = fileId;
-        const dbPost = await appwriteService.createPost({
-          ...data,
-          userID: userData.$id,
-        });
-        if (dbPost) {
-          navigate(`/post/${dbPost.$id}`);
-        }
-      }
+    let file = null;
+    
+    if (data.image && data.image[0]) {
+        file = await appwriteService.uploadFile(data.image[0]);
     }
-  };
+
+    if (!file || !file.$id) {
+        alert("Error: Featured image is required!");
+        return;
+    }
+
+    data.featuredImages = file.$id;  // ✅ Assigning the correct field name
+
+    const dbPost = await appwriteService.createPost({
+        ...data,
+        userID: userData.$id,
+    });
+
+    if (dbPost) {
+        navigate(`/post/${dbPost.$id}`);
+    }
+};
+
   const slugTransform = useCallback((value) => {
     if (value && typeof value === "string")
       return value
@@ -59,7 +52,7 @@ export default function PostForm({ post }) {
         .replace(/\s/g, "-");
 
     return "";
-  },[]);
+  });
 
   useEffect(() => {
     const subscription = watch((value, { name }) => {
@@ -103,12 +96,21 @@ export default function PostForm({ post }) {
         </div>
         <div className="w-1/3 px-2">
           <Input
-            label="feature Image :"
+            label="Feature Image :"
             type="file"
             className="mb-4"
             accept="image/png, image/jpg, image/jpeg, image/gif"
-            {...register("image", { required: !post })}
+            {...register("image", {
+              required: !post ? "Feature image is required" : false,
+            })}
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                console.log("Selected file:", file); // Debugging log
+              }
+            }}
           />
+
           {post && (
             <div className="w-full mb-4">
               <img
