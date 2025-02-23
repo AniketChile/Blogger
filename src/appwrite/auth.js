@@ -19,7 +19,7 @@ export class AuthService {
                 // call another method
                 return this.loginIn({email,password})
             } else {
-                return userAccount;
+                throw new Error("Failed to create user account");
             }
         } catch (error) {
             throw error;
@@ -39,10 +39,8 @@ export class AuthService {
             return await this.account.get();
         } catch (error) {
             console.log("Apppwrite service :: getCurrentUser :: error",error);
-        
+            return null;
         }
-
-        return null;
     }
 
     async logOut(){
@@ -50,6 +48,7 @@ export class AuthService {
             return this.account.deleteSessions();
         } catch (error) {
             console.log("Apppwrite service :: logOut :: error",error); 
+            return null;
         }
     }
 }
