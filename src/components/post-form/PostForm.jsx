@@ -7,16 +7,14 @@ import { useForm } from "react-hook-form";
 import { useCallback } from "react";
 import { useEffect } from "react";
 export default function PostForm({ post }) {
-  const { register, handleSubmit, watch, setValue, control, getValues } =
-    useForm({
+  const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
       defaultValues: {
-        title: post?.title || "",
-        slug: post?.slug || "",
-        content: post?.content || "",
-        status: post?.status || "active",
+          title: post?.title || "",
+          slug: post?.$id || "",
+          content: post?.content || "",
+          status: post?.status || "active",
       },
-    });
-
+  });
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
 
@@ -52,7 +50,7 @@ export default function PostForm({ post }) {
       }
     }
   };
-  const slugTransform = useCallback(() => {
+  const slugTransform = useCallback((value) => {
     if (value && typeof value === "string")
       return value
         .trim()
@@ -61,14 +59,15 @@ export default function PostForm({ post }) {
         .replace(/\s/g, "-");
 
     return "";
-  });
+  },[]);
 
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === "title") {
-        setValue("slug", slugTransform(value.title, { shouldValidate: true }));
+        setValue("slug", slugTransform(value.title), { shouldValidate: true });
       }
     });
+
     return () => {
       subscription.unsubscribe();
     };
