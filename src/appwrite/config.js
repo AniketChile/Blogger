@@ -12,13 +12,9 @@ export class Service{
         this.databases = new Databases(this.client);
         this.bucket = new Storage(this.client)
     }
-    //featuredImage
-    //
+    
     async createPost({ title, slug, content, featuredImage, status, userId }) {
-        try {
-            // Ensure 'featuredImage' is passed as an array
-            const featuredImages = Array.isArray(featuredImage) ? featuredImage : [featuredImage];
-            
+        try {            
             return await this.databases.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
@@ -26,7 +22,7 @@ export class Service{
                 {
                     title,
                     content,
-                    featuredImages, // Ensure it's an array
+                    featuredImage, // Ensure it's an array
                     status,
                     userId, // Ensure the field name matches the schema
                 }

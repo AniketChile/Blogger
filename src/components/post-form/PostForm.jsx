@@ -7,53 +7,65 @@ import { useForm } from "react-hook-form";
 import { useCallback } from "react";
 import { useEffect } from "react";
 export default function PostForm({ post }) {
-  const { register, handleSubmit, watch, setValue, control, getValues } =
-    useForm({
-      defaultValues: {
-        title: post?.title || "",
-        slug: post?.$id || "",
-        content: post?.content || "",
-        status: post?.status || "active",
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    control,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      title: post?.title || "",
+      slug: post?.$id || "",
+      content: post?.content || "",
+      status: post?.status || "active",
+      featuredImage: post?.featuredImage || null,
+    },
+  });
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
 
   const submit = async (data) => {
-    let file = null;
-    
-    if (data.image && data.image[0]) {
-        file = await appwriteService.uploadFile(data.image[0]);
+    let file = data.featuredImage;
+
+    if (!file) {
+      const image = data.image?.[0];
+      if (image) {
+        file = await appwriteService.uploadFile(image);
+      }
     }
 
     if (!file || !file.$id) {
-        alert("Error: Featured image is required!");
-        return;
+      alert("Error: Featured image is required!");
+      return;
     }
 
-    data.featuredImages = file.$id;  // ✅ Assigning the correct field name
+    data.featuredImage = file.$id; // ✅ Assigning the correct field name
 
     const dbPost = await appwriteService.createPost({
-        ...data,
-        userID: userData.$id,
+      ...data,
+      userID: userData.$id,
     });
 
     if (dbPost) {
-        navigate(`/post/${dbPost.$id}`);
+      navigate(`/post/${dbPost.$id}`);
     }
-};
+  };
 
-const slugTransform = useCallback((value) => {
-  if (!value) return "";
-  
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9-_]+/g, "-") // ✅ Keeps only valid slug characters
-    .replace(/-+/g, "-") // ✅ Removes duplicate hyphens
-    .slice(0, 36); // ✅ Ensures max length is 36
-}, []);
-
+  const slugTransform = useCallback(
+    (value) => {
+      if (!value) return "";
+      return value
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9-_]+/g, "-")
+        .replace(/-+/g, "-")
+        .slice(0, 36);
+    },
+    []
+  );
 
   useEffect(() => {
     const subscription = watch((value, { name }) => {
@@ -104,12 +116,6 @@ const slugTransform = useCallback((value) => {
             {...register("image", {
               required: !post ? "Feature image is required" : false,
             })}
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (file) {
-                console.log("Selected file:", file); // Debugging log
-              }
-            }}
           />
 
           {post && (
@@ -136,6 +142,7 @@ const slugTransform = useCallback((value) => {
           </Button>
         </div>
       </form>
+      {errors.image && <p>{errors.image.message}</p>}
     </>
   );
 }
