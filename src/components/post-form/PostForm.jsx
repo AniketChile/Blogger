@@ -52,7 +52,6 @@ export default function PostForm({ post }) {
       }
     }
   };
-
   const slugTransform = useCallback(() => {
     if (value && typeof value === "string")
       return value
@@ -70,7 +69,6 @@ export default function PostForm({ post }) {
         setValue("slug", slugTransform(value.title, { shouldValidate: true }));
       }
     });
-
     return () => {
       subscription.unsubscribe();
     };
