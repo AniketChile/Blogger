@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Input, Select, RTE } from "../index";
+import { Button, Input, Select, RTE } from "..";
 import appwriteService from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -43,16 +43,17 @@ export default function PostForm({ post }) {
     }
 };
 
-  const slugTransform = useCallback((value) => {
-    if (value && typeof value === "string")
-      return value
-        .trim()
-        .toLowerCase()
-        .replace(/^[a-zA-Z\d\s]+/g, "-")
-        .replace(/\s/g, "-");
+const slugTransform = useCallback((value) => {
+  if (!value) return "";
+  
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-_]+/g, "-") // ✅ Keeps only valid slug characters
+    .replace(/-+/g, "-") // ✅ Removes duplicate hyphens
+    .slice(0, 36); // ✅ Ensures max length is 36
+}, []);
 
-    return "";
-  });
 
   useEffect(() => {
     const subscription = watch((value, { name }) => {
@@ -114,7 +115,7 @@ export default function PostForm({ post }) {
           {post && (
             <div className="w-full mb-4">
               <img
-                src={appwriteService.getFilePreview(post.featureImage)}
+                src={appwriteService.getFilePreview(post.featuredImage)}
                 alt={post.title}
                 className="rounded-lg"
               />

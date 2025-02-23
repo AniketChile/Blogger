@@ -12,30 +12,30 @@ export class Service{
         this.databases = new Databases(this.client);
         this.bucket = new Storage(this.client)
     }
-    
-    async createPost({title,slug,content,featureImage,status,userID}){
-            try {
-                return await this.databases.createDocument(
-                    conf.appwriteDatabaseId,
-                    conf.appwriteCollectionId,
-                    ID.unique(),
-                    {   
-                        
-                        title,
-                        content,
-                        featuredImages: featureImage,
-                        status,
-                        userID,
-                        slug,
-                    }
-                )
-            } catch (error) {
-                console.log("Apppwrite service :: createPost :: error",error);
-        
-            }
+    //featuredImage
+    //
+    async createPost({ title, slug, content, featuredImage, status, userId }) {
+        try {
+            // Ensure 'featuredImage' is passed as an array
+            const featuredImages = Array.isArray(featuredImage) ? featuredImage : [featuredImage];
+            
+            return await this.databases.createDocument(
+                conf.appwriteDatabaseId,
+                conf.appwriteCollectionId,
+                slug,
+                {
+                    title,
+                    content,
+                    featuredImages, // Ensure it's an array
+                    status,
+                    userId, // Ensure the field name matches the schema
+                }
+            );
+        } catch (error) {
+            console.log("Apppwrite service :: createPost :: error", error);
+        }
     }
-
-    async updatePost(slug,{title,content,featureImage,status}){
+    async updatePost(slug,{title,content,featuredImage,status}){
       try {
         return await this.databases.updateDocument(
             conf.appwriteDatabaseId,
@@ -43,7 +43,7 @@ export class Service{
             slug,{
                 title,
                 content,
-                featureImage,
+                featuredImage,
                 status
             }
         )

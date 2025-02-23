@@ -10,7 +10,7 @@ import Home from "./pages/Home";
 import AllPosts from "./pages/AllPosts";
 import AddPost from "./pages/AddPost";
 import EditPost from "./pages/EditPost";
-import Post from "./pages/Posts";
+import Post from "./pages/Post";
 const router = createBrowserRouter([
   {
     path: "/",
